@@ -91,8 +91,8 @@ flow-process/
 - [ ] Proteção de rotas (dependendo do perfil)
 
 #### 2. Gestão de Operadores 👥 (RF001)
-- [x] Criar operador (com validação de CPF único)
-- [x] Listar operadores (com filtros)
+- [X] Criar operador (com validação de CPF único)
+- [x ] Listar operadores (com filtros)
 - [x] Detalhar operador
 - [x] Atualizar operador
 - [x] Remover operador (soft delete)
