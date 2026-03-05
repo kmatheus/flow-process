@@ -280,9 +280,6 @@ FASE 4 - Avançado (3 semanas)
 
 ## 📊 Modelagem de Dados (Versão Inicial)
 ```sql
--- Versão simplificada para começar
--- Detalharemos isso na Etapa 2
-
 usuarios (
     id UUID PK,
     email VARCHAR UNIQUE,
@@ -314,8 +311,6 @@ maquinarios (
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 )
-
--- ... demais tabelas
 ```
 
 ---
