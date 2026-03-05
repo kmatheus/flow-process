@@ -120,6 +120,99 @@ flow-process/
 
 ---
 
+## 🚀 Como Começar (Guia para Devs)
+
+### Pré-requisitos
+- Docker e Docker Compose
+- Python 3.11+
+- UV (gerenciador de pacotes)
+
+### Passo a passo
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/kmatheus/flow-process.git
+cd flow-process
+
+# 2. Configure as permissões dos scripts (primeira vez apenas)
+chmod +x start.sh stop.sh status.sh
+
+# 3. Inicie o projeto (sobe containers + servidor)
+./start.sh
+
+# O servidor estará disponível em:
+# API: http://localhost:8000/docs
+# Documentação interativa: http://localhost:8000/redoc
+
+# 4. Para parar o projeto (quando terminar)
+./stop.sh
+
+# 5. Para ver o status dos containers
+./status.sh
+```
+
+### ⚠️ Nota sobre permissões do Docker
+
+Se encontrar erros de permissão (`permission denied`), execute:
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+---
+
+## 🔧 Configuração de Ambiente
+
+### Variáveis de Ambiente
+
+O projeto utiliza variáveis de ambiente para configuração, seguindo as melhores práticas de segurança:
+
+| Variável | Descrição | Exemplo |
+|----------|-----------|---------|
+| `DATABASE_URL` | Conexão com PostgreSQL | `postgresql+asyncpg://usuario:senha@localhost:5432/db` |
+| `REDIS_URL` | Conexão com Redis | `redis://localhost:6379/0` |
+| `SECRET_KEY` | Chave secreta para JWT | `minha-chave-super-secreta` |
+| `ALGORITHM` | Algoritmo JWT | `HS256` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tempo de expiração do token | `30` |
+| `APP_NAME` | Nome da aplicação | `Flow Process API` |
+| `APP_VERSION` | Versão | `0.1.0` |
+| `DEBUG` | Modo debug | `True` ou `False` |
+| `ENVIRONMENT` | Ambiente | `development`, `staging`, `production` |
+| `CORS_ORIGINS` | URLs permitidas (separadas por vírgula) | `http://localhost:5173,http://localhost:3000` |
+
+### Arquivos de Configuração
+```bash
+backend/
+├── .env                 # SEUS DADOS REAIS (NÃO versionar)
+├── .env.example         # Template para outros devs (VERSIONAR)
+└── app/core/config.py   # Carrega as configurações (VERSIONAR)
+```
+
+### ⚠️ Importante
+
+- **NUNCA** commite o arquivo `.env` com senhas reais
+- **SEMPRE** use `.env.example` como template
+- Ao clonar o projeto, copie `.env.example` para `.env`:
+  ```bash
+  cp backend/.env.example backend/.env
+  ```
+- Edite o .env com suas configurações locais
+
+### 🔐 Gerando uma SECRET_KEY segura
+Para produção, gere uma chave aleatória forte:
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+### 🌍 Ambientes Diferentes
+| Ambiente | DEBUG | ENVIRONMENT | Uso |
+|----------|-----------|---------|-----|
+| Desenvolvimento | `True` | `development` | Local |
+| Testes | `True` | `testing` | CI/CD |
+| Produção | `False` | `production` | Servidor real |
+
+---
+
 ## 🔒 Princípios de Design (Nossos Compromissos)
 
 ### 1. **Idempotência**
@@ -181,36 +274,6 @@ FASE 4 - Avançado (3 semanas)
 ├── Relatórios em background
 ├── Dashboard com métricas
 └── Testes E2E
-```
-
----
-
-## 🚀 Como Começar (Guia para Devs)
-
-```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/flow-process.git
-cd flow-process
-
-# Suba os containers
-docker-compose up -d
-
-# Backend
-cd backend
-cp .env.example .env
-poetry install
-poetry run alembic upgrade head
-poetry run uvicorn app.main:app --reload
-
-# Frontend (em outro terminal)
-cd frontend
-cp .env.example .env
-npm install
-npm run dev
-
-# Acesse
-# API: http://localhost:8000/docs
-# Frontend: http://localhost:5173
 ```
 
 ---
