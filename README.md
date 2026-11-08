@@ -72,6 +72,7 @@ flow-process/
 - **Ruff** - Linting e formatação unificados
 - **Pytest + Hypothesis** - Testes com propriedades
 - **Celery + Redis** - Tarefas assíncronas e cache
+- **Redis** - Cache e blacklist de tokens JWT
 - **Docker** - Containerização
 - **GitHub Actions** - CI/CD automatizado
 
@@ -84,11 +85,11 @@ flow-process/
 ### ✅ Funcionalidades Prioritárias
 
 #### 1. Autenticação e Usuários 🔐
-- [ ] Cadastro de usuário (apenas admin)
-- [ ] Login com JWT
-- [ ] Refresh token
-- [ ] Logout (invalidação de token)
-- [ ] Proteção de rotas (dependendo do perfil)
+- [x] Cadastro de usuário (apenas admin)
+- [x] Login com JWT
+- [x] Refresh token
+- [x] Logout (invalidação de token)
+- [x] Proteção de rotas (dependendo do perfil)
 
 #### 2. Gestão de Operadores 👥 (RF001)
 - [x] Criar operador (com validação de CPF único)
@@ -322,32 +323,32 @@ Todas as operações de escrita (POST, PUT, PATCH, DELETE) serão idempotentes s
 
 ## 🗺️ Roadmap do Projeto
 ```bash
-FASE 0 - Fundação (2 semanas)
-├── Setup do projeto (git, estrutura)
-├── Configuração do ambiente Docker
-├── Modelagem inicial do banco
-└── CI/CD básico (lint, testes)
+FASE 0 - Fundação ✅ CONCLUÍDA
+├── Setup do projeto (git, estrutura) ✅
+├── Configuração do ambiente Docker ✅
+├── Modelagem inicial do banco ✅
+└── CI/CD básico (lint, testes) ⏳ (a fazer)
 
-FASE 1 - Core (3 semanas)
-├── Autenticação (JWT)
-├── CRUD Operadores
-├── CRUD Maquinários
-└── Testes unitários do core
+FASE 1 - Core ✅ CONCLUÍDA
+├── Autenticação (JWT) ✅
+├── CRUD Operadores ✅
+├── CRUD Maquinários ✅
+└── Testes unitários do core ⏳ (próximo passo)
 
-FASE 2 - Negócio (3 semanas)
-├── CRUD Aviamentos
-├── CRUD Processos
-├── Regras de negócio (validações)
-└── Testes de integração
+FASE 2 - Negócio ✅ CONCLUÍDA
+├── CRUD Aviamentos ✅
+├── CRUD Processos ✅
+├── Regras de negócio (validações) ✅
+└── Testes de integração ⏳ (próximo passo)
 
-FASE 3 - Frontend (4 semanas)
+FASE 3 - Frontend ⏳ (a fazer)
 ├── Setup React + Tailwind
 ├── Tela de login
 ├── Telas de listagem (com filtros)
 ├── Telas de cadastro/edição
 └── Integração com API
 
-FASE 4 - Avançado (3 semanas)
+FASE 4 - Avançado ⏳ (a fazer)
 ├── Cache com Redis
 ├── Tarefas assíncronas (Celery)
 ├── Relatórios em background
@@ -364,6 +365,7 @@ usuarios (
     email VARCHAR UNIQUE,
     senha_hash VARCHAR,
     nome VARCHAR,
+    is_admin BOOLEAN DEFAULT FALSE,
     ativo BOOLEAN,
     created_at TIMESTAMP
 )
