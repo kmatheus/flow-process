@@ -40,7 +40,7 @@ services:
       DATABASE_URL: postgresql+asyncpg://flow_user:flow_password@postgres:5432/flow_process
       REDIS_URL: redis://redis:6379/0
       SECRET_KEY: dev-secret-key-change-in-production
-      CORS_ORIGINS: http://localhost:5173
+      CORS_ORIGINS: http://localhost:5173,http://172.20.0.2:5173
     ports:
       - "8000:8000"
     depends_on:

@@ -142,7 +142,7 @@ git clone https://github.com/kmatheus/flow-process.git
 cd flow-process
 
 # 2. Configure as permissões dos scripts (primeira vez apenas)
-chmod +x start.sh stop.sh status.sh
+chmod +x start.sh stop.sh status.sh logs.sh
 
 # 3. Inicie o projeto (Docker Compose sobe tudo: DB, Backend e Frontend)
 ./start.sh
@@ -159,10 +159,26 @@ chmod +x start.sh stop.sh status.sh
 ./status.sh
 ```
 
-Para ver os logs em tempo real:
+### 🛠️ Scripts Utilitários
+
+O projeto possui scripts para facilitar o dia a dia:
+
+| Script | Descrição |
+|--------|-----------|
+| `start.sh` | Inicia todos os serviços (Docker Compose) |
+| `stop.sh` | Para todos os serviços |
+| `status.sh` | Mostra o status dos containers e dicas |
+| `logs.sh` | Mostra logs de todos os serviços (ou de um específico) |
+
+**Exemplos de uso:**
+
 ```bash
-docker compose logs -f
+./logs.sh            # Logs de todos os serviços
+./logs.sh backend    # Logs apenas do backend
+./logs.sh frontend   # Logs apenas do frontend
 ```
+
+---
 
 ### ⚠️ Nota sobre permissões do Docker
 
@@ -171,6 +187,19 @@ Se encontrar erros de permissão (`permission denied`), execute:
 sudo usermod -aG docker $USER
 newgrp docker
 ```
+
+### 👤 Criando o primeiro usuário admin
+
+Após iniciar o projeto pela primeira vez (`./start.sh`), o banco de dados estará vazio. Para criar o usuário administrador inicial, execute:
+
+```bash
+docker exec -it flow_backend /app/.venv/bin/python seed_admin.py
+```
+
+Credenciais padrão:
+- Email: `admin@flowprocess.com`
+- Senha: `admin123456`
+> ⚠️ Importante: Em produção, altere a senha do admin imediatamente após o primeiro login.
 
 ---
 
