@@ -213,6 +213,63 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 
 ---
 
+## 🔐 Autenticação
+
+O sistema utiliza **JWT (JSON Web Tokens)** para autenticação, com dois tipos de tokens:
+
+| Token | Duração | Uso |
+|-------|---------|-----|
+| `access_token` | 30 minutos | Acesso às rotas protegidas |
+| `refresh_token` | 7 dias | Renovar o access token (a implementar) |
+
+### Fluxo de Autenticação
+
+1. **Login** → Recebe `access_token` e `refresh_token`
+2. **Requisições** → Envia `access_token` no header `Authorization: Bearer <token>`
+3. **Expiração** → Use `refresh_token` para obter novos tokens (a implementar)
+
+### Endpoints de Autenticação
+
+| Método | Endpoint | Descrição | Protegido? |
+|--------|----------|-----------|------------|
+| `POST` | `/api/v1/auth/login` | Login com email e senha | ❌ Não |
+| `POST` | `/api/v1/auth/register` | Cadastrar novo usuário | ✅ Admin |
+
+### Como testar no Swagger
+
+1. No Swagger, vá até **`POST /api/v1/auth/login`** e clique em "Try it out"
+2. Preencha `username` e `password` com as credenciais do admin:
+   - **username:** `admin@flowprocess.com`
+   - **password:** `admin123456`
+3. Clique em "Execute". O Swagger guardará o token automaticamente.
+4. Clique no cadeado **"Authorize"** 🔓. Como o token já foi capturado, você verá **"Authorized"** em verde.
+5. Agora você pode testar as rotas protegidas!
+
+### Exemplo de Login (curl)
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=admin@flowprocess.com&password=admin123456"
+```
+
+### Exemplo de Requisição Autenticada (curl)
+
+```bash
+# Use o access_token retornado no login
+curl -X POST "http://localhost:8000/api/v1/auth/register" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "novo@flowprocess.com",
+    "nome": "Novo Usuário",
+    "senha": "senha123456",
+    "is_admin": false
+  }'
+```
+
+---
+
 ## 🔒 Princípios de Design (Nossos Compromissos)
 
 ### 1. **Idempotência**

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.api.routes import health, operadores, maquinarios, aviamentos, processos
+from app.api.routes import health, operadores, maquinarios, aviamentos, processos, auth
+from app.models.usuario import Usuario
 
 app = FastAPI(
     title="Flow Process API",
@@ -9,6 +10,7 @@ app = FastAPI(
 
 # Incluir rotas
 app.include_router(health.router, prefix="/api/v1")
+app.include_router(auth.router, prefix="/api/v1")
 app.include_router(operadores.router, prefix="/api/v1")
 app.include_router(maquinarios.router, prefix="/api/v1")
 app.include_router(aviamentos.router, prefix="/api/v1")
