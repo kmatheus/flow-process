@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List, Optional
 from app.core.database import get_db
+from app.models.usuario import Usuario
+from app.api.dependencies import get_current_user
 from app.models.maquinario import Maquinario
 from app.schemas.maquinario import MaquinarioCreate, MaquinarioResponse, MaquinarioUpdate
 
@@ -11,7 +13,8 @@ router = APIRouter(prefix="/maquinarios", tags=["Maquinários"])
 @router.post("/", response_model=MaquinarioResponse, status_code=status.HTTP_201_CREATED)
 async def criar_maquinario(
     maquinario: MaquinarioCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Cria um novo maquinário (RF002)"""
     # Verificar se número já existe
@@ -35,7 +38,8 @@ async def listar_maquinarios(
     skip: int = 0,
     limit: int = 100,
     status: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Lista todos os maquinários com filtro opcional por status"""
     query = select(Maquinario).offset(skip).limit(limit)
@@ -49,7 +53,8 @@ async def listar_maquinarios(
 @router.get("/{maquinario_id}", response_model=MaquinarioResponse)
 async def obter_maquinario(
     maquinario_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Obtém um maquinário pelo ID"""
     query = select(Maquinario).where(Maquinario.id == maquinario_id)
@@ -67,7 +72,8 @@ async def obter_maquinario(
 async def atualizar_maquinario(
     maquinario_id: str,
     maquinario_update: MaquinarioUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Atualiza um maquinário existente"""
     query = select(Maquinario).where(Maquinario.id == maquinario_id)
@@ -101,7 +107,8 @@ async def atualizar_maquinario(
 @router.delete("/{maquinario_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remover_maquinario(
     maquinario_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Remove um maquinário (soft delete)"""
     query = select(Maquinario).where(Maquinario.id == maquinario_id)

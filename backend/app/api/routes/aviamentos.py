@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from typing import List, Optional
 from app.core.database import get_db
+from app.models.usuario import Usuario
+from app.api.dependencies import get_current_user
 from app.models.aviamento import Aviamento
 from app.schemas.aviamento import (
     AviamentoCreate, 
@@ -16,7 +18,8 @@ router = APIRouter(prefix="/aviamentos", tags=["Aviamentos/Recursos"])
 @router.post("/", response_model=AviamentoResponse, status_code=status.HTTP_201_CREATED)
 async def criar_aviamento(
     aviamento: AviamentoCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Cria um novo aviamento/recurso (RF003)"""
     # Verificar se código do produto já existe
@@ -41,7 +44,8 @@ async def listar_aviamentos(
     limit: int = 100,
     categoria: Optional[str] = None,
     nome: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Lista todos os aviamentos com filtros opcionais"""
     query = select(Aviamento).offset(skip).limit(limit)
@@ -58,7 +62,8 @@ async def listar_aviamentos(
 @router.get("/{aviamento_id}", response_model=AviamentoResponse)
 async def obter_aviamento(
     aviamento_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Obtém um aviamento pelo ID"""
     query = select(Aviamento).where(Aviamento.id == aviamento_id)
@@ -76,7 +81,8 @@ async def obter_aviamento(
 async def atualizar_aviamento(
     aviamento_id: str,
     aviamento_update: AviamentoUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Atualiza um aviamento existente"""
     query = select(Aviamento).where(Aviamento.id == aviamento_id)
@@ -114,7 +120,8 @@ async def atualizar_aviamento(
 async def movimentar_estoque(
     aviamento_id: str,
     movimentacao: AviamentoMovimentacao,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Registra entrada ou saída de estoque"""
     query = select(Aviamento).where(Aviamento.id == aviamento_id)
@@ -150,7 +157,8 @@ async def movimentar_estoque(
 @router.delete("/{aviamento_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remover_aviamento(
     aviamento_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Remove um aviamento (soft delete)"""
     query = select(Aviamento).where(Aviamento.id == aviamento_id)

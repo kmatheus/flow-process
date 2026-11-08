@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from typing import List, Optional
 from app.core.database import get_db
+from app.models.usuario import Usuario
+from app.api.dependencies import get_current_user
 from app.models.processo import Processo
 from app.models.operador import Operador
 from app.models.maquinario import Maquinario
@@ -19,7 +21,8 @@ router = APIRouter(prefix="/processos", tags=["Processos"])
 @router.post("/", response_model=ProcessoResponse, status_code=status.HTTP_201_CREATED)
 async def criar_processo(
     processo: ProcessoCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Cria um novo processo (RF004)"""
     
@@ -80,7 +83,8 @@ async def listar_processos(
     limit: int = 100,
     status: Optional[str] = None,
     tipo: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Lista todos os processos com filtros opcionais"""
     query = select(Processo).offset(skip).limit(limit)
@@ -97,7 +101,8 @@ async def listar_processos(
 @router.get("/{processo_id}", response_model=ProcessoResponse)
 async def obter_processo(
     processo_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Obtém um processo pelo ID"""
     query = select(Processo).where(Processo.id == processo_id)
@@ -115,7 +120,8 @@ async def obter_processo(
 async def atualizar_processo(
     processo_id: str,
     processo_update: ProcessoUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Atualiza um processo existente"""
     query = select(Processo).where(Processo.id == processo_id)
@@ -148,7 +154,8 @@ async def atualizar_processo(
 async def atualizar_status_processo(
     processo_id: str,
     status_update: ProcessoStatusUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Atualiza apenas o status do processo (executar, pausar, encerrar)"""
     query = select(Processo).where(Processo.id == processo_id)
@@ -176,7 +183,8 @@ async def atualizar_status_processo(
 @router.delete("/{processo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remover_processo(
     processo_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Remove um processo (apenas se estiver encerrado)"""
     query = select(Processo).where(Processo.id == processo_id)

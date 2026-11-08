@@ -220,13 +220,13 @@ O sistema utiliza **JWT (JSON Web Tokens)** para autenticação, com dois tipos 
 | Token | Duração | Uso |
 |-------|---------|-----|
 | `access_token` | 30 minutos | Acesso às rotas protegidas |
-| `refresh_token` | 7 dias | Renovar o access token (a implementar) |
+| `refresh_token` | 7 dias | Renovar o access token |
 
 ### Fluxo de Autenticação
 
 1. **Login** → Recebe `access_token` e `refresh_token`
 2. **Requisições** → Envia `access_token` no header `Authorization: Bearer <token>`
-3. **Expiração** → Use `refresh_token` para obter novos tokens (a implementar)
+3. **Expiração** → Use `refresh_token` para obter novos tokens
 
 ### Endpoints de Autenticação
 
@@ -234,6 +234,28 @@ O sistema utiliza **JWT (JSON Web Tokens)** para autenticação, com dois tipos 
 |--------|----------|-----------|------------|
 | `POST` | `/api/v1/auth/login` | Login com email e senha | ❌ Não |
 | `POST` | `/api/v1/auth/register` | Cadastrar novo usuário | ✅ Admin |
+| `POST` | `/api/v1/auth/refresh` | Renovar o access_token | ❌ Não (requer refresh_token) |
+| `POST` | `/api/v1/auth/logout` | Encerrar sessão (blacklist) | ✅ Usuário logado |
+
+### 🛡️ Proteção de Rotas
+
+A partir desta versão, **TODAS** as rotas de negócio (Operadores, Maquinários, Aviamentos e Processos) estão protegidas. É obrigatório enviar o `access_token` no header `Authorization: Bearer <token>` para acessá-las.
+
+### 🚪 Logout e Revogação de Token
+
+O logout invalida o token imediatamente. Internamente, o sistema adiciona o identificador único do token (`jti`) em uma **blacklist no Redis**. O Redis é configurado para apagar essa entrada automaticamente quando o token expiraria naturalmente, evitando acúmulo de lixo no banco.
+
+### 💡 Dica: Testando o Refresh Token via curl
+
+Como o endpoint de refresh espera o token no corpo da requisição (e não no header), use o seguinte comando:
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/auth/refresh" \
+  -H "Content-Type: application/json" \
+  -d '"SEU_REFRESH_TOKEN_AQUI"'
+```
+
+---
 
 ### Como testar no Swagger
 

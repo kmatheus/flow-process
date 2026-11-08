@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List
 from app.core.database import get_db
+from app.models.usuario import Usuario
+from app.api.dependencies import get_current_user
 from app.models.operador import Operador
 from app.schemas.operador import OperadorCreate, OperadorResponse, OperadorUpdate
 
@@ -11,7 +13,8 @@ router = APIRouter(prefix="/operadores", tags=["Operadores"])
 @router.post("/", response_model=OperadorResponse, status_code=status.HTTP_201_CREATED)
 async def criar_operador(
     operador: OperadorCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Cria um novo operador (RF001)"""
     # Verificar se CPF já existe
@@ -34,7 +37,8 @@ async def criar_operador(
 async def listar_operadores(
     skip: int = 0,
     limit: int = 100,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Lista todos os operadores"""
     query = select(Operador).offset(skip).limit(limit)
@@ -44,7 +48,8 @@ async def listar_operadores(
 @router.get("/{operador_id}", response_model=OperadorResponse)
 async def obter_operador(
     operador_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Obtém um operador pelo ID"""
     query = select(Operador).where(Operador.id == operador_id)
@@ -62,7 +67,8 @@ async def obter_operador(
 async def atualizar_operador(
     operador_id: str,
     operador_update: OperadorUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Atualiza um operador existente"""
     query = select(Operador).where(Operador.id == operador_id)
@@ -86,7 +92,8 @@ async def atualizar_operador(
 @router.delete("/{operador_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remover_operador(
     operador_id: str,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     """Remove um operador (soft delete)"""
     query = select(Operador).where(Operador.id == operador_id)
