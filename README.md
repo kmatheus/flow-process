@@ -119,6 +119,12 @@ flow-process/
 - [x] Atualizar status (executar, pausar, encerrar)
 - [x] Regra: não remover processo em execução
 
+#### 6. Testes Automatizados 🧪
+- [x] Testes unitários (segurança, JWT)
+- [x] Testes de integração (rotas, regras de negócio)
+- [x] Cobertura de cenários de erro (CPF duplicado, saldo insuficiente)
+- [x] Mock de Redis para testes isolados
+
 ---
 
 ## 🚀 Como Começar (Guia para Devs)
@@ -306,11 +312,19 @@ O projeto possui uma suíte completa de testes automatizados para garantir a qua
 ### Estrutura de Testes
 ```bash
 tests/
-├── conftest.py              # Configurações e fixtures (banco de teste, client HTTP)
+├── conftest.py              # Configurações, fixtures globais e mock do Redis
 ├── factories.py             # Fábricas de dados fake
-├── test_security.py         # Testes unitários (hash de senha, JWT)
-└── test_integracao_operadores.py  # Testes de integração (rotas da API)
+├── unit/                    # Testes isolados (não dependem de banco/rede)
+│   └── test_security.py     # Hash de senha, JWT
+└── integration/             # Testes de fluxo completo (banco de dados, API)
+    ├── test_integracao_auth.py
+    ├── test_integracao_aviamentos.py
+    ├── test_integracao_maquinarios.py
+    ├── test_integracao_operadores.py
+    └── test_integracao_processos.py
 ```
+
+---
 
 ### Como rodar os testes
 ```bash
@@ -412,13 +426,13 @@ FASE 1 - Core ✅ CONCLUÍDA
 ├── Autenticação (JWT) ✅
 ├── CRUD Operadores ✅
 ├── CRUD Maquinários ✅
-└── Testes unitários do core ⏳ (próximo passo)
+└── Testes unitários do core ✅
 
 FASE 2 - Negócio ✅ CONCLUÍDA
 ├── CRUD Aviamentos ✅
 ├── CRUD Processos ✅
 ├── Regras de negócio (validações) ✅
-└── Testes de integração ⏳ (próximo passo)
+└── Testes de integração ✅
 
 FASE 3 - Frontend ⏳ (a fazer)
 ├── Setup React + Tailwind
