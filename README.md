@@ -144,18 +144,24 @@ cd flow-process
 # 2. Configure as permissões dos scripts (primeira vez apenas)
 chmod +x start.sh stop.sh status.sh
 
-# 3. Inicie o projeto (sobe containers + servidor)
+# 3. Inicie o projeto (Docker Compose sobe tudo: DB, Backend e Frontend)
 ./start.sh
 
 # O servidor estará disponível em:
 # API: http://localhost:8000/docs
 # Documentação interativa: http://localhost:8000/redoc
+# Frontend: http://localhost:5173
 
 # 4. Para parar o projeto (quando terminar)
 ./stop.sh
 
 # 5. Para ver o status dos containers
 ./status.sh
+```
+
+Para ver os logs em tempo real:
+```bash
+docker compose logs -f
 ```
 
 ### ⚠️ Nota sobre permissões do Docker

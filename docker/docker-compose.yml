@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U flow_user"]
+      test: ["CMD-SHELL", "pg_isready -U flow_user -d flow_process"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -32,6 +32,51 @@ services:
       retries: 5
     networks:
       - flow_network
+
+  backend:
+    build: ../backend
+    container_name: flow_backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://flow_user:flow_password@postgres:5432/flow_process
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: dev-secret-key-change-in-production
+      CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - flow_network
+    develop:
+      watch:
+        - action: sync
+          path: ../backend
+          target: /app
+          ignore:
+            - .venv/
+            - __pycache__/
+        - action: rebuild
+          path: ../backend/pyproject.toml
+
+  frontend:
+    build: ../frontend
+    container_name: flow_frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - flow_network
+    develop:
+      watch:
+        - action: sync
+          path: ../frontend
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ../frontend/package.json
 
 volumes:
   postgres_data:

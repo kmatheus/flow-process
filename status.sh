@@ -1,7 +1,8 @@
 #!/bin/bash
-echo "📊 Status dos containers:"
-sudo docker ps
+
+echo "📊 Status dos containers Docker:"
+docker ps
 
 echo ""
-echo "📊 Portas em uso:"
-sudo lsof -i :8000,5432,6379 2>/dev/null || echo "Nenhum serviço do projeto rodando."
+echo "💡 Para ver os logs do Backend: tail -f backend.log"
+echo "💡 Para ver os logs do Frontend: tail -f frontend.log"
