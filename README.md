@@ -319,6 +319,8 @@ uv run pytest -v
 ```
 
 ### Cobertura de testes
+Para gerar um relatório de cobertura (percentual do código testado):
+
 ```bash
 uv run pytest --cov=app tests/ --cov-report=html
 # Abra o arquivo htmlcov/index.html no navegador para visualizar
@@ -326,9 +328,7 @@ uv run pytest --cov=app tests/ --cov-report=html
 
 ### ⚠️ Importante
 - Os testes usam **SQLite em memória**, portanto **não afetam** seu banco PostgreSQL de desenvolvimento.
-
 - Cada teste é isolado: as tabelas são criadas e destruídas automaticamente.
-
 - Os testes de integração provam que a **autenticação JWT** está funcionando de ponta a ponta.
 
 ---
