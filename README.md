@@ -470,8 +470,8 @@ FASE 2 - Negócio ✅ CONCLUÍDA
 └── Testes de integração ✅
 
 FASE 3 - Frontend ⏳ (a fazer)
-├── Setup React + Tailwind
-├── Tela de login
+├── Setup React + Tailwind ✅
+├── Tela de login ✅
 ├── Telas de listagem (com filtros)
 ├── Telas de cadastro/edição
 └── Integração com API
