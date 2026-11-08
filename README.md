@@ -293,6 +293,46 @@ curl -X POST "http://localhost:8000/api/v1/auth/register" \
 
 ---
 
+## 🧪 Testes Automatizados
+
+O projeto possui uma suíte completa de testes automatizados para garantir a qualidade e a consistência do código, sendo a base para um ambiente de produção robusto.
+
+### Ferramentas
+- **Pytest**: Framework de testes
+- **Pytest-AsyncIO**: Suporte a testes assíncronos
+- **Factory Boy**: Geração de dados fakes
+- **SQLite em memória**: Banco isolado para testes rápidos
+
+### Estrutura de Testes
+```bash
+tests/
+├── conftest.py              # Configurações e fixtures (banco de teste, client HTTP)
+├── factories.py             # Fábricas de dados fake
+├── test_security.py         # Testes unitários (hash de senha, JWT)
+└── test_integracao_operadores.py  # Testes de integração (rotas da API)
+```
+
+### Como rodar os testes
+```bash
+cd backend
+uv run pytest -v
+```
+
+### Cobertura de testes
+```bash
+uv run pytest --cov=app tests/ --cov-report=html
+# Abra o arquivo htmlcov/index.html no navegador para visualizar
+```
+
+### ⚠️ Importante
+- Os testes usam **SQLite em memória**, portanto **não afetam** seu banco PostgreSQL de desenvolvimento.
+
+- Cada teste é isolado: as tabelas são criadas e destruídas automaticamente.
+
+- Os testes de integração provam que a **autenticação JWT** está funcionando de ponta a ponta.
+
+---
+
 ## 🔒 Princípios de Design (Nossos Compromissos)
 
 ### 1. **Idempotência**
