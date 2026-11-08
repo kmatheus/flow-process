@@ -333,6 +333,45 @@ uv run pytest --cov=app tests/ --cov-report=html
 
 ---
 
+## 🗄️ Migrações de Banco de Dados (Alembic)
+
+O projeto utiliza **Alembic** para versionar o esquema do banco de dados. Isso significa que qualquer alteração na estrutura das tabelas é registrada em um script de migração, que pode ser aplicado ou revertido de forma segura.
+
+### Comandos Essenciais
+
+| Comando | Descrição |
+|---------|-----------|
+| `alembic revision --autogenerate -m "descrição"` | Gerar um novo script de migração comparando os modelos com o banco |
+| `alembic upgrade head` | Aplicar todas as migrações pendentes |
+| `alembic downgrade -1` | Reverter a última migração aplicada |
+| `alembic history` | Ver o histórico de migrações |
+| `alembic current` | Ver qual migração está aplicada no momento |
+
+### Fluxo de Trabalho
+
+1.  **Alterou um modelo?** (ex: adicionou uma coluna)
+2.  Gere a migração: `uv run alembic revision --autogenerate -m "adiciona coluna X"`
+3.  Revise o arquivo gerado em `alembic/versions/`
+4.  Aplique: `uv run alembic upgrade head`
+5.  **Commite o arquivo de migração junto com o código!**
+
+### 🔄 Resetando o Banco de Dados (Apenas Desenvolvimento)
+
+Se precisar limpar o banco e recriar as tabelas do zero, use o script:
+
+```bash
+cd backend
+./reset_db.sh
+```
+❗️ Cuidado: Isso apaga todos os dados do banco de desenvolvimento!
+
+### ⚠️ Importante
+- Nunca use `Base.metadata.create_all()` manualmente em produção. O Alembic é a única fonte de verdade para a estrutura do banco.
+- Os scripts de migração são versionados no Git e devem ser commitados junto com as alterações nos modelos.
+- O Alembic mantém a tabela `alembic_version` para saber qual migração está aplicada.
+
+---
+
 ## 🔒 Princípios de Design (Nossos Compromissos)
 
 ### 1. **Idempotência**
